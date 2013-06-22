@@ -1,0 +1,5 @@
+target/
+project/
+*.log
+.idea/
+.idea_modules/
