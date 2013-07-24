@@ -5,6 +5,7 @@ import net.liftweb.common._
 import net.liftweb.http._
 import net.liftweb.sitemap._
 import Loc._
+import net.liftmodules.widgets.logchanger.{LogbackLoggingBackend, LogLevelChanger}
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -16,16 +17,19 @@ class Boot extends Loggable {
     // where to search snippet
     LiftRules.addToPackages("com.webitoria")
 
+    object logLevel extends LogLevelChanger with LogbackLoggingBackend
+    LogLevelChanger.init
+
     // Build SiteMap
     val entries = List(
 
       Menu.i("Home") / "index", // the simple way to declare a menu
-
       Menu.i("Test") / "test",
 
-      // more complex because this menu allows anything in the
-      // /static path to be visible
-      Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Static Content"))
+      // more complex because this menu allows anything in the static path to be visible
+      Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Static Content")),
+
+      logLevel.menu
     )
 
     // set the sitemap.  Note if you don't want access control for
