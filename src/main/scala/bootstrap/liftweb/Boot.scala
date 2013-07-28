@@ -8,16 +8,20 @@ import common._
 import http._
 import sitemap._
 import Loc._
+import net.liftmodules.widgets.logchanger.{LogbackLoggingBackend, LogLevelChanger}
 
 /**
  * A class that's instantiated early and run.  It allows the application
  * to modify lift's environment
  */
-class Boot {
+class Boot extends Loggable {
 
   def boot {
     // where to search snippet
     LiftRules.addToPackages("com.webitoria")
+
+    object logLevel extends LogLevelChanger with LogbackLoggingBackend
+    LogLevelChanger.init
 
     // Build SiteMap
     val entries = List(
@@ -28,7 +32,9 @@ class Boot {
 
       // more complex because this menu allows anything in the
       // /static path to be visible
-      Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Static Content"))
+      Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Static Content")),
+
+      logLevel.menu
     )
 
     // set the sitemap.  Note if you don't want access control for
@@ -46,5 +52,7 @@ class Boot {
 
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
+
+    logger.info("APPLICATION STARTED: run.mode = %s".format(Props.mode))
   }
 }
