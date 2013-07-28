@@ -1,0 +1,14 @@
+Add this to src/main/webapp/WEB-INF/web.xml to avoid Jetty static files locking on Windows:
+
+    <!-- Override init parameter to avoid nasty -->
+    <!-- file locking issue on windows.-->
+    <servlet>
+        <servlet-name>default</servlet-name>
+        <init-param>
+            <param-name>useFileMappedBuffer</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
+
+More:
+http://docs.codehaus.org/display/JETTY/Files+locked+on+Windows
